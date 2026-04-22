@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flip Clock</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Segoe UI', sans-serif; }
+  .clock { display: flex; gap: 6px; align-items: center; }
+  .unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .flip-wrap { display: flex; gap: 4px; }
+  .card { width: 52px; height: 70px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 700; color: #f0f0f0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); position: relative; overflow: hidden; letter-spacing: -1px; }
+  .card::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.5); }
+  .card.flip { animation: flip 0.35s ease forwards; }
+  @keyframes flip { 0% { transform: rotateX(0deg); } 50% { transform: rotateX(-90deg); background: #111; } 100% { transform: rotateX(0deg); } }
+  .label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .separator { font-size: 42px; font-weight: 700; color: #444; margin-bottom: 18px; line-height: 1; }
+  .date-row { display: flex; justify-content: center; margin-top: 10px; font-size: 11px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div>
+  <div class="clock">
+    <div class="unit"><div class="flip-wrap"><div class="card" id="h1">0</div><div class="card" id="h2">0</div></div><span class="label">Jam</span></div>
+    <div class="separator">:</div>
+    <div class="unit"><div class="flip-wrap"><div class="card" id="m1">0</div><div class="card" id="m2">0</div></div><span class="label">Menit</span></div>
+    <div class="separator">:</div>
+    <div class="unit"><div class="flip-wrap"><div class="card" id="s1">0</div><div class="card" id="s2">0</div></div><span class="label">Detik</span></div>
+  </div>
+  <div class="date-row" id="daterow">—</div>
+</div>
+<script>
+  const DAYS = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function setCard(id, val) { const el = document.getElementById(id); if (el.textContent !== val) { el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); el.textContent = val; } }
+  function tick() {
+    const now = new Date();
+    const h = pad(now.getHours()); const m = pad(now.getMinutes()); const s = pad(now.getSeconds());
+    setCard('h1', h[0]); setCard('h2', h[1]); setCard('m1', m[0]); setCard('m2', m[1]); setCard('s1', s[0]); setCard('s2', s[1]);
+    const day = DAYS[now.getDay()]; const date = now.getDate(); const month = MONTHS[now.getMonth()]; const year = now.getFullYear();
+    document.getElementById('daterow').textContent = day + ', ' + date + ' ' + month + ' ' + year;
+  }
+  tick(); setInterval(tick, 1000);
+</script>
+</body>
+</html>
